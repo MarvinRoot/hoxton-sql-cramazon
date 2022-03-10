@@ -26,6 +26,6 @@ model Order {
   userId   Int
   itemId   Int
   quantity Int
-  item     Item @relation(fields: [itemId], references: [id])
-  user     User @relation(fields: [userId], references: [id])
+  item     Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
