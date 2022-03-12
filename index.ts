@@ -15,66 +15,91 @@ app.get('/users', async (req, res) => {
 
 app.get('/users/:id', async (req, res) => {
     const id = Number(req.params.id)
-    const user = await prisma.user.findUnique({ where: {id: id} })
+    const user = await prisma.user.findUnique({ where: { id: id } })
     res.send(user)
 })
 
-app.delete('/users/:id', async (req,res) => {
+app.delete('/users/:id', async (req, res) => {
     const id = Number(req.params.id)
-    try{
-       const user = await prisma.user.delete({where: {id: id}})
-        res.send(user) 
-    } catch(error) {
-        // @ts-ignore
-      res.status(400).send(`<pre>${error.message}</pre>`)
-    }
-})
-
-app.post('/users', async (req,res) => {
-    const { name, email} = req.body
-
-    try{
-        const newUser = await prisma.user.create(
-            {data: { 
-                name, email
-            }
-        })
-        res.send(newUser)
-    } catch(error) {
-        // @ts-ignore
-      res.status(400).send(`<pre>${error.message}</pre>`)
-    }
-})
-
-app.get('/orders', async (req,res) => {
-    const orders = await prisma.order.findMany()
-    res.send(orders)
-})
-
-app.get('/orders/:id', async (req,res) => {
-    const id = Number(req.params.id)
-    try{
-        const order = await prisma.order.findUnique({where: {id}})
-        res.send(order)
-    }catch(error) {
+    try {
+        const user = await prisma.user.findUnique({ where: { id } })
+        if (user) {
+            await prisma.user.delete({ where: { id: id } })
+            res.send(user)
+        } else {
+            res.status(400).send({ error: 'User not found' })
+        }
+    } catch (error) {
         // @ts-ignore
         res.status(400).send(`<pre>${error.message}</pre>`)
     }
 })
 
-app.post('/orders', async (req,res) => {
-    const { userId, itemId, quantity} = req.body
+app.post('/users', async (req, res) => {
+    const { name, email } = req.body
 
-    try{
-        const newOrder = await prisma.order.create(
-            {data: { 
-                userId, itemId, quantity
-            }
-        })
-        res.send(newOrder)
-    } catch(error) {
+    try {
+        const newUser = await prisma.user.create(
+            {
+                data: {
+                    name, email
+                }
+            })
+        res.send(newUser)
+    } catch (error) {
         // @ts-ignore
-      res.status(400).send(`<pre>${error.message}</pre>`)
+        res.status(400).send(`<pre>${error.message}</pre>`)
+    }
+})
+
+app.get('/orders', async (req, res) => {
+    const orders = await prisma.order.findMany()
+    res.send(orders)
+})
+
+app.get('/orders/:id', async (req, res) => {
+    const id = Number(req.params.id)
+    try {
+        const order = await prisma.order.findUnique({ where: { id } })
+        res.send(order)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send(`<pre>${error.message}</pre>`)
+    }
+})
+
+app.delete('/orders/:id', async (req, res) => {
+    const id = Number(req.params.id)
+    try {
+        const order = await prisma.order.findUnique({ where: { id } })
+
+        if (order) {
+            await prisma.order.delete({ where: { id: id } })
+            res.send(order)
+        }
+        else {
+            res.status(400).send({ error: 'Order not found' })
+        }
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send(`<pre>${error.message}</pre>`)
+    }
+})
+
+app.post('/orders', async (req, res) => {
+    const { userId, itemId, quantity } = req.body
+
+    try {
+        const newOrder = await prisma.order.create(
+            {
+                data: {
+                    userId, itemId, quantity
+                }
+            })
+        res.send(newOrder)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send(`<pre>${error.message}</pre>`)
     }
 })
 
@@ -85,28 +110,46 @@ app.get('/items', async (req, res) => {
 
 app.get('/items/:id', async (req, res) => {
     const id = Number(req.params.id)
-    try{
-        const item = await prisma.item.findUnique({ where: {id: id} })
+    try {
+        const item = await prisma.item.findUnique({ where: { id: id } })
         res.send(item)
-    } catch(error) {
+    } catch (error) {
         // @ts-ignore
-      res.status(400).send(`<pre>${error.message}</pre>`)
+        res.status(400).send(`<pre>${error.message}</pre>`)
     }
 })
 
-app.post('/items', async (req,res) => {
-    const { title, image} = req.body
+app.delete('/items/:id', async (req, res) => {
+    const id = Number(req.params.id)
+    try {
+        const item = await prisma.item.findUnique({ where: { id } })
 
-    try{
-        const newItem = await prisma.item.create(
-            {data: { 
-                title, image
-            }
-        })
-        res.send(newItem)
-    } catch(error) {
+        if (item) {
+            await prisma.item.delete({ where: { id: id } })
+            res.send(item)
+        } else {
+            res.status(400).send({ error: 'Item not found' })
+        }
+    } catch (error) {
         // @ts-ignore
-      res.status(400).send(`<pre>${error.message}</pre>`)
+        res.status(400).send(`<pre>${error.message}</pre>`)
+    }
+})
+
+app.post('/items', async (req, res) => {
+    const { title, image } = req.body
+
+    try {
+        const newItem = await prisma.item.create(
+            {
+                data: {
+                    title, image
+                }
+            })
+        res.send(newItem)
+    } catch (error) {
+        // @ts-ignore
+        res.status(400).send(`<pre>${error.message}</pre>`)
     }
 })
 
